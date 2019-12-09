@@ -1,5 +1,6 @@
 # Command-line address-book program
 import pickle
+import sys
 
 
 class Person:
@@ -41,18 +42,26 @@ class Person:
         print('Phone number:', self.phone)
         print()
 
+    def get_name(self):
+        """Return the name of the contact."""
+        return self.name
+
 
 def access_contacts():
-    """Function to access the contacts saved in the class Person."""
+    """Function to access the specific contacts saved in the class Person."""
     while True:
-        a = input('Which contact do you want to access? ')
-        person[int(a)].info()
-        b = input('Do you want to access any other contact? Y/N ')
-        if b == 'Y' or b == 'y':
+        inicial_access = input('Which contact do you want to access? ')
+        person[int(inicial_access)].info()
+        yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
+        no = {'No', 'no', 'N', 'n', ''}
+        choice = input('Do you want to access any other contact? Y/N ')
+        if choice in yes:
             continue
-        else:
+        elif choice in no:
             dyw()
             break
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no'")
     return
 
 
@@ -70,11 +79,17 @@ def edit_contact():
         else:
             print('Invalid value, try again!')
             continue
-        l = input('Do you want to edit another contact? Y/N ')
-        if l == 'y' or l == 'Y':
+        yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
+        no = {'No', 'no', 'N', 'n', ''}
+        choice = input('Do you want to edit another contact? Y/N ')
+        if choice in yes:
             continue
-        dyw()
-        break
+        elif choice in no:
+            dyw()
+            break
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no'")
+            print()
     return
 
 
@@ -95,20 +110,33 @@ def add_contact():
 
 def dyw():
     """Function to ask if the user want to do anything else with the program"""
-    w = input('Do you want to do anything else? Y/N ')
-    if w == 'y' or w == 'Y':
-        while True:
-            h = input('What do you want to do? (add, access or edit) ')
-            if h == 'add' or h == 'Add':
-                add_contact()
-            elif h == 'access' or h == 'Access':
-                access_contacts()
-            elif h == 'edit' or h == 'Edit':
-                edit_contact()
-            else:
-                print('Invalid option, try again!')
-    else:
+    yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
+    no = {'No', 'no', 'N', 'n', ''}
+    choice = input('Do you want to do anything else? Y/N ')
+    if choice in yes:
+        wywtd()
+    elif choice in no:
         return
+    else:
+        sys.stdout.write("Please respond with 'yes' or 'no'")
+        print()
+        dyw()
+
+
+def wywtd ():
+    """Function to ask the user what they want to do."""
+    choice = input('What do you want to do? (add, access, edit or exit) ')
+    if choice == 'add' or choice == 'Add':
+        add_contact()
+    elif choice == 'access' or choice == 'Access':
+        get_access()
+    elif choice == 'edit' or choice == 'Edit':
+        edit_contact()
+    elif choice == 'exit' or choice == 'Exit':
+        return
+    else:
+        print('Invalid option, try again!')
+        wywtd()
 
 
 def save_archive():
@@ -149,12 +177,56 @@ def load_archive():
         return
 
 
+def access_all_contacts():
+    """Function to access a list of all contacts."""
+    global person
+    for i in range(1, len(person) + 1):
+        print('Contact {}: '.format(i), person[i].get_name())
+    dyw()
+
+
+def get_access():
+    """Function to get the option of the user in which type of access they want."""
+    d = input("Do you want to access all contacts or specific contacts? "
+              "(a for all, s for specific) ")
+    if d == 'a' or d == 'all' or d == 'All':
+        access_all_contacts()
+    else:
+        access_contacts()
+
+def ask_to_save ():
+    yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
+    no = {'No', 'no', 'N', 'n', ''}
+    choice = input('Do you want to save the values? Y/N ')
+    if choice in yes:
+        save_archive()
+    elif choice in no:
+        print ('Choosing that, nothing will be saved!')
+        choice_two = input("Are you sure that you don't want to save anything? Y/N ")
+        if choice_two in yes:
+            print ('Ok! Nothing will be saved')
+        elif choice_two in no:
+            ask_to_save()
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no'")
+            print()
+            ask_to_save()
+
+def ask_to_load ():
+    yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
+    no = {'No', 'no', 'N', 'n', ''}
+    choice_one = input('Do you want to load any previous version? Y/N ')
+    if choice_one in yes:
+        load_archive()
+    elif choice_one in no:
+        print ('Nothing will be loaded')
+    else:
+        sys.stdout.write("Please respond with 'yes' or 'no'")
+        print()
+        ask_to_load()
+
 person = {}
 save = {}
-a = input('Do you want to load any previous version? Y/N ')
-if a == 'y' or a == 'Y':
-    load_archive()
-add_contact()
-b = input('Do you want to save the values? Y/N ')
-if b == 'y' or b == 'Y':
-    save_archive()
+ask_to_load()
+wywtd()
+ask_to_save()
