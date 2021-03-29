@@ -8,31 +8,30 @@ class Person:
 
     def __init__(self, name, email, phone):
         self.name = name
-        self.email = email
+        self.email = email.lower()
         self.phone = phone
         print()
-        print("Added person {} to the list".format(self.name))
+        print(f"Added person {self.name} to the list")
         print()
 
-    def newemail(self, nemail):
+    def new_email(self, new_email):
         """Change the email address."""
-        if nemail == self.email:
+        new_email = new_email.lower()
+        While(new_email == self.email):
             print('The new email is the same as the old one!')
-            z = input("Digit a new email address: ")
-            self.newemail(z)
-        else:
-            self.email = nemail
-            print('The new email is:', nemail)
+            new_email = input("Digit a new email address: ").lower()
 
-    def newphone(self, nphone):
+        self.email = new_email
+        print('The new email is:', new_email)
+
+    def new_phone(self, new_phone):
         """Change the phone number"""
-        if nphone == self.phone:
+        While(new_phone == self.phone):
             print('The new phone number is the same as the old one!')
-            y = input('Digit a new phone number: ')
-            self.newphone(y)
-        else:
-            self.phone = nphone
-            print('The new phone number is:', nphone)
+            new_phone = input('Digit a new phone number: ')
+        
+        self.phone = new_phone
+        print('The new phone number is:', new_phone)
 
     def info(self):
         """Return the information about the contact"""
@@ -49,47 +48,48 @@ class Person:
 
 def access_contacts():
     """Function to access the specific contacts saved in the class Person."""
-    while True:
-        inicial_access = input('Which contact do you want to access? ')
-        person[int(inicial_access)].info()
-        yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
-        no = {'No', 'no', 'N', 'n', ''}
-        choice = input('Do you want to access any other contact? Y/N ')
-        if choice in yes:
-            continue
-        elif choice in no:
-            dyw()
-            break
-        else:
-            sys.stdout.write("Please respond with 'yes' or 'no'")
+    
+    YES = {'yes', 'y', 'ye'}
+
+    inicial_access = input('Which contact do you want to access? ')
+    person[int(inicial_access)].info()
+        
+    user_input_choice = input('Do you want to access any other contact? y/N ').lower()
+
+    if user_input_choice in YES:
+        access_contacts()
+        return
+
+    dyw()
     return
 
 
 def edit_contact():
     """Function to edit the contacts saved in the class Person"""
-    while True:
-        c = input('Which contact do you want to edit? ')
-        d = input("What do you want to edit in contact {}? ".format(c))
-        if d == 'email' or d == 'email address':
-            e = input("Digit the new email address: ")
-            person[int(c)].newemail(e)
-        elif d == 'phone' or d == 'phone number':
-            e = input("Digit the new phone number: ")
-            person[int(c)].newphone(e)
-        else:
-            print('Invalid value, try again!')
-            continue
-        yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
-        no = {'No', 'no', 'N', 'n', ''}
-        choice = input('Do you want to edit another contact? Y/N ')
-        if choice in yes:
-            continue
-        elif choice in no:
-            dyw()
-            break
-        else:
-            sys.stdout.write("Please respond with 'yes' or 'no'")
-            print()
+    
+    YES = {'yes', 'y', 'ye'}
+
+    contact = input('Which contact do you want to edit? ')
+    change = input("What do you want to edit in contact {}? ".format(contact)).lower()
+    if change == 'email' or d == 'email address':
+        new_email = input("Digit the new email address: ")
+        person[int(contact)].new_email(new_email)
+    elif change == 'phone' or d == 'phone number':
+        new_phone = input("Digit the new phone number: ")
+        person[int(contact)].newphone(new_phone)
+    else:
+        print('Invalid value, try again!')
+        edit_contact()
+        return
+    
+
+    user_input_choice = input('Do you want to edit another contact? y/N ').lower()
+
+    if user_input_choice in YES:
+        edit_contact()
+        return
+    
+    dyw()
     return
 
 
@@ -97,22 +97,30 @@ def add_contact():
     """Function to add contacts to the class Person"""
     global person
     global save
-    c = input("Enter the number of contacts that you want to add: ")
-    for contact in range(1, int(c) + 1):
-        n = input("Enter the name of the contact {}: ".format(len(person) + 1))
-        e = input("Enter the email address of the contact {}: ".format(len(person) + 1))
-        p = input("Enter the phone number of the contact {}: ".format(len(person) + 1))
-        person[len(person) + 1] = Person(n, e, p)
-        save[len(save) + 1] = (n, e, p)
+    contacts = input("Enter the number of contacts that you want to add: ")
+    try:
+        contacts = int(contacts)
+
+    except e as Exception:
+        print e
+        return
+        
+    for contact in range(0, contacts):
+        name = input("Enter the name of the contact {}: ".format(len(person) + 1))
+        email = input("Enter the email address of the contact {}: ".format(len(person) + 1))
+        phone = input("Enter the phone number of the contact {}: ".format(len(person) + 1))
+        person[len(person) + 1] = Person(name, email, person)
+        save[len(save) + 1] = (name, email, person)
+        
     dyw()
     return
 
 
 def dyw():
     """Function to ask if the user want to do anything else with the program"""
-    yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
-    no = {'No', 'no', 'N', 'n', ''}
-    choice = input('Do you want to do anything else? Y/N ')
+    YES = {'yes', 'y', 'ye'}
+    choice = input('Do you want to do anything else? y/N ').lower()
+
     if choice in yes:
         wywtd()
     elif choice in no:
@@ -225,8 +233,9 @@ def ask_to_load ():
         print()
         ask_to_load()
 
-person = {}
-save = {}
-ask_to_load()
-wywtd()
-ask_to_save()
+if __name__ = "__main__":
+    person = {}
+    save = {}
+    ask_to_load()
+    wywtd()
+    ask_to_save()
