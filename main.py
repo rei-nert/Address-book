@@ -1,7 +1,5 @@
 # Command-line address-book program
-import pickle
-import sys
-
+import sqlite3
 
 class Person:
     """A class to archive information about the people, such as name, email address and phone number."""
@@ -46,37 +44,53 @@ class Person:
         return self.name
 
 
-def access_contacts():
+def access_contacts(db):
     """Function to access the specific contacts saved in the class Person."""
     
     YES = {'yes', 'y', 'ye'}
 
-    inicial_access = input('Which contact do you want to access? ')
-    person[int(inicial_access)].info()
+    contact_id = input('Which contact do you want to access? ')
+    
+    try:
+        contact_id = int(contact_id)
+
+    except er as Exception:
+        print(er)
+
+    db[contact_id].info()
         
     user_input_choice = input('Do you want to access any other contact? y/N ').lower()
 
     if user_input_choice in YES:
-        access_contacts()
+        access_contacts(db)
         return
 
-    dyw()
+    userExit(db)
     return
 
 
-def edit_contact():
+def edit_contact(db):
     """Function to edit the contacts saved in the class Person"""
     
     YES = {'yes', 'y', 'ye'}
 
-    contact = input('Which contact do you want to edit? ')
-    change = input("What do you want to edit in contact {}? ".format(contact)).lower()
+    contact_id = input('Which contact do you want to edit? ')
+    
+    try:
+        contact_id = int(contact_id)
+
+    except er as Exception:
+        print(er)
+
+    change = input("What do you want to edit in contact {}? ".format(contact_id)).lower()
     if change == 'email' or d == 'email address':
         new_email = input("Digit the new email address: ")
-        person[int(contact)].new_email(new_email)
+        db[contact_id].new_email(new_email)
+        
     elif change == 'phone' or d == 'phone number':
         new_phone = input("Digit the new phone number: ")
-        person[int(contact)].newphone(new_phone)
+        db[contact_id].newphone(new_phone)
+
     else:
         print('Invalid value, try again!')
         edit_contact()
@@ -89,14 +103,12 @@ def edit_contact():
         edit_contact()
         return
     
-    dyw()
+    userExit(db)
     return
 
 
-def add_contact():
+def add_contact(db):
     """Function to add contacts to the class Person"""
-    global person
-    global save
     contacts = input("Enter the number of contacts that you want to add: ")
     try:
         contacts = int(contacts)
@@ -105,96 +117,81 @@ def add_contact():
         print e
         return
         
-    for contact in range(0, contacts):
-        name = input("Enter the name of the contact {}: ".format(len(person) + 1))
-        email = input("Enter the email address of the contact {}: ".format(len(person) + 1))
-        phone = input("Enter the phone number of the contact {}: ".format(len(person) + 1))
-        person[len(person) + 1] = Person(name, email, person)
-        save[len(save) + 1] = (name, email, person)
+    for i in range(0, contacts):
+        name = input("Enter the name of the contact {}: ".format(len(db) + 1))
+        email = input("Enter the email address of the contact {}: ".format(len(db) + 1))
+        phone = input("Enter the phone number of the contact {}: ".format(len(db) + 1))
+        db[len(db) + 1] = Person(name, email, person)
         
-    dyw()
+    userExit(db)
     return
 
 
-def dyw():
+def userExit(db):
     """Function to ask if the user want to do anything else with the program"""
     YES = {'yes', 'y', 'ye'}
     choice = input('Do you want to do anything else? y/N ').lower()
 
     if choice in yes:
-        wywtd()
-    elif choice in no:
-        return
-    else:
-        sys.stdout.write("Please respond with 'yes' or 'no'")
-        print()
-        dyw()
+        userChoice(db)
+    
+    return
 
-
-def wywtd ():
+def userChoice(db):
     """Function to ask the user what they want to do."""
-    choice = input('What do you want to do? (add, access, edit or exit) ')
-    if choice == 'add' or choice == 'Add':
-        add_contact()
-    elif choice == 'access' or choice == 'Access':
-        get_access()
-    elif choice == 'edit' or choice == 'Edit':
-        edit_contact()
-    elif choice == 'exit' or choice == 'Exit':
-        return
+    
+    userChoice = input('What do you want to do? (add, access, edit or EXIT) ').lower()
+
+    if userChoice == 'add':
+        add_contact(db)
+    elif userChoice == 'access':
+        get_access(db)
+    elif choice == 'edit':
+        edit_contact(db)
     else:
-        print('Invalid option, try again!')
-        wywtd()
-
-
-def save_archive():
-    """Function to save the data."""
-    global person
-    save_yn = input('Do you want to save the raw data? Y/N ')
-    if save_yn == 'y' or save_yn == 'Y':
-        global save
-        file_name = 'backup_raw_data.txt'
-        file_object = open(file_name, 'w')
-        file_object.write(str(save))
-        file_object.close()
-    file_name1 = 'backup.data'
-    file_object1 = open(file_name1, 'wb')
-    pickle.dump(person, file_object1)
-    file_object1.close()
-
-
-def load_archive():
-    """Function to load the previous archived data."""
-    global person
-    global save
-    try:
-        infile = open('backup.data', 'rb')
-        person = pickle.load(infile)
-        infile.close()
-        try:
-            with open('backup_raw_data.txt') as f:
-                save = f
-        except:
-            print('ERROR in loading raw data')
-            print('New archive being created!')
-            return
-
-    except:
-        print('ERROR in loading')
-        print('New archive being created!')
         return
 
-
-def access_all_contacts():
-    """Function to access a list of all contacts."""
-    global person
-    for i in range(1, len(person) + 1):
-        print('Contact {}: '.format(i), person[i].get_name())
-    dyw()
+class Database:
+    def __init__(self):
+        """Start sqlite database in memory"""
+        self.memoryDatabase = sqlite3.connect(:memory:)
+        self.db = self.memoryDatabase.cursor()
 
 
-def get_access():
-    """Function to get the option of the user in which type of access they want."""
+    def save(self):
+        """Function to save the data in an sqlite database."""
+        YES = ['yes', 'ye', 'y']
+
+        saveDb = input("Do you want to save the contacts? y/N ").lower()
+        
+        if saveDb in YES:
+            con = sqlite3.connect('contacts.db')
+            contacts = self.db.execute("SELECT ALL FROM contacts")
+            self.db = con.cursor()
+            self.db.executemany("INSERT INTO contacts VALUES (?, ?, ?, ?)", contacts)
+            con.commit()
+            con.close()
+
+        return
+
+    def load():
+        """Function to load the previous archived data."""
+        con = sqlite3.connect('contacts.db')
+        self.db = con.cursor()
+
+    def accessContacts():
+        """Function to access a list of all contacts."""
+
+        contacts = self.db.execute("SELECT ALL FROM contacts")
+
+        for i in range(contacts):
+            print('Contact {}: '.format(i+1), contact[i].get_name())
+
+        userExit(self)
+
+
+    def get_access():
+        """Function to get the option of the user in which type of access they want."""
     d = input("Do you want to access all contacts or specific contacts? "
               "(a for all, s for specific) ")
     if d == 'a' or d == 'all' or d == 'All':
@@ -237,5 +234,5 @@ if __name__ = "__main__":
     person = {}
     save = {}
     ask_to_load()
-    wywtd()
+    userChoice(db)
     ask_to_save()
