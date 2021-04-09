@@ -1,48 +1,7 @@
 # Command-line address-book program
 import sqlite3
-
-class Person:
-    """A class to archive information about the people, such as name, email address and phone number."""
-
-    def __init__(self, name, email, phone):
-        self.name = name
-        self.email = email.lower()
-        self.phone = phone
-        print()
-        print(f"Added person {self.name} to the list")
-        print()
-
-    def new_email(self, new_email):
-        """Change the email address."""
-        new_email = new_email.lower()
-        While(new_email == self.email):
-            print('The new email is the same as the old one!')
-            new_email = input("Digit a new email address: ").lower()
-
-        self.email = new_email
-        print('The new email is:', new_email)
-
-    def new_phone(self, new_phone):
-        """Change the phone number"""
-        While(new_phone == self.phone):
-            print('The new phone number is the same as the old one!')
-            new_phone = input('Digit a new phone number: ')
-        
-        self.phone = new_phone
-        print('The new phone number is:', new_phone)
-
-    def info(self):
-        """Return the information about the contact"""
-        print()
-        print('Name:', self.name)
-        print('Email address:', self.email)
-        print('Phone number:', self.phone)
-        print()
-
-    def get_name(self):
-        """Return the name of the contact."""
-        return self.name
-
+from contact import Person
+from database import Database
 
 def access_contacts(db):
     """Function to access the specific contacts saved in the class Person."""
@@ -57,7 +16,7 @@ def access_contacts(db):
     except er as Exception:
         print(er)
 
-    db[contact_id].info()
+    db.info(contact_id)
         
     user_input_choice = input('Do you want to access any other contact? y/N ').lower()
 
@@ -151,53 +110,6 @@ def userChoice(db):
     else:
         return
 
-class Database:
-    def __init__(self):
-        """Start sqlite database in memory"""
-        self.memoryDatabase = sqlite3.connect(:memory:)
-        self.db = self.memoryDatabase.cursor()
-
-
-    def save(self):
-        """Function to save the data in an sqlite database."""
-        YES = ['yes', 'ye', 'y']
-
-        saveDb = input("Do you want to save the contacts? y/N ").lower()
-        
-        if saveDb in YES:
-            con = sqlite3.connect('contacts.db')
-            contacts = self.db.execute("SELECT ALL FROM contacts")
-            self.db = con.cursor()
-            self.db.executemany("INSERT INTO contacts VALUES (?, ?, ?, ?)", contacts)
-            con.commit()
-            con.close()
-
-        return
-
-    def load():
-        """Function to load the previous archived data."""
-        con = sqlite3.connect('contacts.db')
-        self.db = con.cursor()
-
-    def accessContacts():
-        """Function to access a list of all contacts."""
-
-        contacts = self.db.execute("SELECT ALL FROM contacts")
-
-        for i in range(contacts):
-            print('Contact {}: '.format(i+1), contact[i].get_name())
-
-        userExit(self)
-
-
-    def get_access():
-        """Function to get the option of the user in which type of access they want."""
-    d = input("Do you want to access all contacts or specific contacts? "
-              "(a for all, s for specific) ")
-    if d == 'a' or d == 'all' or d == 'All':
-        access_all_contacts()
-    else:
-        access_contacts()
 
 def ask_to_save ():
     yes = {'yes', 'y', 'Yes', 'ye', 'Ye'}
