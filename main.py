@@ -1,5 +1,5 @@
 # Command-line address-book program
-from contact import Person
+# from contact import Person
 from database import Database
 
 def access_contacts(db):
@@ -70,10 +70,10 @@ def add_contacts(db):
         return
         
     for i in range(0, contacts):
-        name = input("Enter the name of the contact {}: ".format(len(db) + 1))
-        email = input("Enter the email address of the contact {}: ".format(len(db) + 1))
-        phone = input("Enter the phone number of the contact {}: ".format(len(db) + 1))
-        db.insertContact(name, email, person)
+        name = input("Enter the name of the contact {}: ".format(i))
+        email = input("Enter the email address of the contact {}: ".format(i))
+        phone = input("Enter the phone number of the contact {}: ".format(i))
+        db.insertContact(name, email, phone)
         
     userExit(db)
     return
@@ -84,7 +84,7 @@ def userExit(db):
     YES = {'yes', 'y', 'ye'}
     choice = input('Do you want to do anything else? y/N ').lower()
 
-    if choice in yes:
+    if choice in YES:
         userChoice(db)
     
     return
@@ -95,9 +95,9 @@ def userChoice(db):
     userChoice = input('What do you want to do? (add, access, edit or EXIT) ').lower()
 
     if userChoice == 'add':
-        add_contact(db)
+        add_contacts(db)
     elif userChoice == 'access':
-        get_access(db)
+        db.get_access()
     elif choice == 'edit':
         edit_contact(db)
     else:
@@ -119,6 +119,6 @@ def ask_to_load(db):
 
 if __name__ == "__main__":
     database = Database()
-    ask_to_load()
+    ask_to_load(database)
     userChoice(database)
-    ask_to_save()
+    ask_to_save(database)
