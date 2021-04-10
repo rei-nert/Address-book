@@ -12,3 +12,7 @@ The contacts' email and phone number can be edited.
 
 `python3 main.py `
 
+
+## Technologies:
+- Python 3.9.4
+- SQLite 3
