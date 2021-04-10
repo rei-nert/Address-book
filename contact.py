@@ -17,6 +17,7 @@ class Person:
             new_email = input("Digit a new email address: ").lower()
 
         self.email = new_email
+
         print('The new email is:', new_email)
 
     def new_phone(self, new_phone):
@@ -27,14 +28,6 @@ class Person:
         
         self.phone = new_phone
         print('The new phone number is:', new_phone)
-
-    def info(self):
-        """Return the information about the contact"""
-        print()
-        print('Name:', self.name)
-        print('Email address:', self.email)
-        print('Phone number:', self.phone)
-        print()
 
     def get_name(self):
         """Return the name of the contact."""
