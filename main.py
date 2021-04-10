@@ -13,7 +13,6 @@ def access_contacts(db):
 
     if user_input_choice in YES:
         access_contacts(db)
-        return
 
     userExit(db)
     return
@@ -33,17 +32,17 @@ def edit_contact(db):
         print(er)
 
     change = input("What do you want to edit in contact {}? ".format(contact_id)).lower()
-    if change == 'email' or d == 'email address':
+    if change == 'email' or change == 'email address':
         new_email = input("Digit the new email address: ")
-        db.changeEmail(id, new_email)
+        db.changeEmail(contact_id, new_email)
         
-    elif change == 'phone' or d == 'phone number':
+    elif change == 'phone' or change == 'phone number':
         new_phone = input("Digit the new phone number: ")
-        db.changePhone(id, new_phone)
+        db.changePhone(contact_id, new_phone)
 
     elif change == 'name':
-        newName = input("DIgit the new name: ")
-        db.changeName(id, name)
+        newName = input("Digit the new name: ")
+        db.changeName(contact_id, newName)
     else:
         print('Invalid value, try again!')
         edit_contact(db)
@@ -69,7 +68,7 @@ def add_contacts(db):
         print(e)
         return
         
-    for i in range(0, contacts):
+    for i in range(1, (contacts+ 1)):
         name = input("Enter the name of the contact {}: ".format(i))
         email = input("Enter the email address of the contact {}: ".format(i))
         phone = input("Enter the phone number of the contact {}: ".format(i))
@@ -97,8 +96,8 @@ def userChoice(db):
     if userChoice == 'add':
         add_contacts(db)
     elif userChoice == 'access':
-        db.get_access()
-    elif choice == 'edit':
+        access_contacts(db)
+    elif userChoice == 'edit':
         edit_contact(db)
     else:
         return

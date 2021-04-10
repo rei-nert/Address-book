@@ -32,10 +32,11 @@ class Database:
 
         if saveDb in YES:
             self.createDb()
-            contacts = self.db.execute("SELECT ALL FROM contacts")
+            self.db.execute("SELECT * FROM contacts")
+            contacts = self.db.fetchall()
             self.con = sqlite3.connect('./contacts.sqlite')
-            self.db = con.cursor()
-            self.db.executemany("INSERT INTO contacts VALUES (?, ?, ?, ?)", contacts)
+            self.db = self.con.cursor()
+            self.db.executemany("INSERT OR REPLACE INTO contacts VALUES (?, ?, ?, ?)", contacts)
             self.con.commit()
 
         return
@@ -43,19 +44,17 @@ class Database:
     def load(self):
         """Function to load the previous archived data."""
         self.con = sqlite3.connect('./contacts.sqlite')
-        self.db = con.cursor()
+        self.db = self.con.cursor()
 
     def accessContacts(self):
         """Function to access a list of all contacts."""
 
         self.db.execute("SELECT ALL id FROM contacts")
-        contacts = self.db.fetchone()
-        print(contacts)
+        contacts = self.db.fetchall()
 
         for id in range(1, len(contacts)+1):
             self.info(id)
 
-        userExit(self)
         return
 
 
@@ -78,25 +77,31 @@ class Database:
         if userChoice == 'a' or userChoice == 'all':
             self.accessContacts()
         else:
-            self.acessSpecificContacts()
+            self.acessSpecificContact()
         return
 
 
     def info(self, id):
         self.db.execute("SELECT * FROM contacts WHERE id=?", (id, ))
         contact = self.db.fetchone()
-        print(contact)
+        print(f"ID: {contact[0]}")
+        print(f"Name: {contact[1]}")
+        print(f"Email: {contact[2]}")
+        print(f"Phone: {contact[3]}\n")
         return
 
     def changeEmail(self, id, email):
-        self.db.execute("""UPDATE FROM contacts SET email=? WHERE id=?""", (email, id))
+        self.db.execute("""UPDATE contacts SET email=? WHERE id=?""", (email, id))
+        self.con.commit()
         return
 
     def changePhone(self, id, phone):
-        self.db.execute("""UPDATE FROM contacts SET phone=? WHERE id=?""", (phone, id))
+        self.db.execute("""UPDATE contacts SET phone=? WHERE id=?""", (phone, id))
+        self.con.commit()
         return
 
     def changeName(self, id, name):
-        self.db.execute("""UPDATE FROM contacts SET name=? WHERE id=?""", (name, id))
+        self.db.execute("""UPDATE contacts SET name=? WHERE id=?""", (name, id))
+        self.con.commit()
         return
 
